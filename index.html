@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Chain Multiplication - DP</title>
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:520px;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0px 8px 20px rgba(0,0,0,0.3);
+    text-align:center;
+}
+
+h1{
+    color:#1E3A8A;
+}
+
+p{
+    color:#555;
+}
+
+input{
+    width:90%;
+    padding:12px;
+    margin:10px 0;
+    border:2px solid #3B82F6;
+    border-radius:8px;
+    font-size:16px;
+}
+
+input:focus{
+    outline:none;
+    border-color:#10B981;
+    box-shadow:0px 0px 8px #10B981;
+}
+
+button{
+    background:#10B981;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#047857;
+    transform:scale(1.05);
+}
+
+.result{
+    margin-top:20px;
+    background:#E0F2FE;
+    padding:15px;
+    border-left:6px solid #0284C7;
+    border-radius:8px;
+    font-size:20px;
+    color:#0F172A;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Matrix Chain Multiplication</h1>
+<h2>Dynamic Programming Technique</h2>
+
+<p>Enter matrix dimensions separated by commas.</p>
+<p><b>Example:</b> 10,20,30,40,30</p>
+
+<input type="text" id="dims" placeholder="10,20,30,40,30">
+
+<br>
+
+<button onclick="calculate()">Compute Optimal Cost</button>
+
+<div class="result" id="output">
+Optimal Cost will appear here.
+</div>
+
+</div>
+
+<script>
+
+function matrixChainOrder(p){
+
+    let n = p.length;
+    let dp = [];
+
+    for(let i=0;i<n;i++){
+        dp[i]=[];
+        for(let j=0;j<n;j++){
+            dp[i][j]=0;
+        }
+    }
+
+    for(let L=2;L<n;L++){
+
+        for(let i=1;i<n-L+1;i++){
+
+            let j=i+L-1;
+            dp[i][j]=Number.MAX_SAFE_INTEGER;
+
+            for(let k=i;k<j;k++){
+
+                let q = dp[i][k] + dp[k+1][j] + p[i-1]*p[k]*p[j];
+
+                if(q < dp[i][j]){
+                    dp[i][j]=q;
+                }
+            }
+        }
+    }
+
+    return dp[1][n-1];
+}
+
+function calculate(){
+
+    let input=document.getElementById("dims").value;
+
+    if(input.trim()==""){
+        alert("Please enter matrix dimensions.");
+        return;
+    }
+
+    let arr=input.split(",").map(Number);
+
+    if(arr.length<2){
+        alert("Enter at least two dimensions.");
+        return;
+    }
+
+    let cost=matrixChainOrder(arr);
+
+    document.getElementById("output").innerHTML=
+    "✅ Optimal Multiplication Cost : <br><span style='color:#0F9D58;'>"+cost+"</span> Scalar Multiplications";
+
+}
+
+</script>
+
+</body>
+</html>
